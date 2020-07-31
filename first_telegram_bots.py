@@ -5,7 +5,7 @@ Token = f.read()
 
 bot = telebot.TeleBot(token=Token)
 
-# Good Kamill, you did it
+# 11 дай уйти
 
 @bot.message_handler(content_types=['text'])
 def send_msg(message):
