@@ -11,7 +11,7 @@ def send_msg(message):
         email.the_process_of_sending('2:45')
 
     if message.text == 'Карим':
-        bot.send_message(message.chat.id, "лошара")
+        bot.send_message(message.chat.id, "лошара_aaaaaaaaaaaaaaaaaaa")
     elif message.text == 'Камиль':
         bot.send_message(message.chat.id, "крутой")
     else:
