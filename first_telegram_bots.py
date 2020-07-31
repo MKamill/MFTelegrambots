@@ -5,7 +5,7 @@ def enable_bot():
     f = open(r'/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/bot_config.txt', 'r')
     Token = f.read()
 
-    bot = telebot.TeleBot(token=Token)
+    bot = telebot.TeleBot(Token)
 
     # 11 дай уйти
 
