@@ -21,6 +21,11 @@ def send_msg(message):
         bot.send_message(message.chat.id, message.text)
 
 
+while True:
+    try:
+        bot.polling(none_stop=True)
+    except:
+        continue
 
 
-bot.polling(none_stop=True)
+
