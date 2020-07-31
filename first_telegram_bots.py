@@ -1,4 +1,5 @@
 import telebot
+import time
 
 f = open(r'/storage/emulated/0/Android/data/ru.iiec.pydroid3.1/bot_config.txt', 'r')
 Token = f.read()
@@ -27,10 +28,10 @@ def send_msg(message):
 while True:
     try:
         bot.polling(none_stop=True)
-        status = True
     except:
-        if status:
-            disconnect_counter += 1
-        status = False
+        local_time = float(1)
+        local_time = local_time * 60
+        time.sleep(local_time)
+        disconnect_counter += 1
         print('----------------------[' + str(disconnect_counter) + ']----------------------')
         continue
