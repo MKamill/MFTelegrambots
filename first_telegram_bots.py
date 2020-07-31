@@ -13,9 +13,9 @@ def start_message(message):
 
 @bot.message_handler(content_types=['text'])
 def send_msg(message):
-    if message == '0909':
+    if message == 'mom':
         bot.send_message(message.chat.id, 'Приветствуем Вас Юлия')
-    elif message == '9090':
+    elif message == 'me':
         bot.send_message(message.chat.id, 'Приветствуем Вас Камиль')
     else:
         bot.send_message(message.chat.id, message.text)
