@@ -1,10 +1,10 @@
 import telebot
 
 
-f = open(r'/storage/emulated/0/Android/data/ru.iiec.pydroid3/files/bot_config.txt', 'r')
+f = open(r'/storage/emulated/0/Android/data/ru.iiec.pydroid3.1/bot_config.txt', 'r')
 Token = f.read()
 
-bot = telebot.TeleBot('1092838389:AAFc8XHNwhOyWVRKD2-nRTPUCFspbuzev0k')
+bot = telebot.TeleBot(Token)
 
 # 11 дай уйти
 
