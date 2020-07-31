@@ -5,7 +5,9 @@ Token = f.read()
 
 bot = telebot.TeleBot(Token)
 
-disconnect_counter=0
+disconnect_counter = 0
+status = False
+
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -25,10 +27,10 @@ def send_msg(message):
 while True:
     try:
         bot.polling(none_stop=True)
+        status = True
     except:
-        disconnect_counter+=1
-        print('-----------------['+disconnect_counter+']-----------------')
+        if status:
+            disconnect_counter += 1
+        status = False
+        print('----------------------[' + str(disconnect_counter) + ']----------------------')
         continue
-
-
-
