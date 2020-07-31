@@ -13,7 +13,7 @@ def start_message(message):
 def send_msg(message):
     if message =='0909':
         bot.send_message(message.chat.id, 'Приветствуем Вас Юлия')
-    elif message=='9090'
+    elif message=='9090':
         bot.send_message(message.chat.id, 'Приветствуем Вас Камиль')
 
 
