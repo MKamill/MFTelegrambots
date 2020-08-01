@@ -1,59 +1,60 @@
-import types
+import datetime
+import urllib
 
 import telebot
 import time
 
-f = open(r'/storage/emulated/0/Android/data/ru.iiec.pydroid3.1/bot_config.txt', 'r')
-Token = f.read()
+# f = open(r'/storage/emulated/0/Android/data/ru.iiec.pydroid3.1/bot_config.txt', 'r')
+# Token = f.read()
+Token = '1092838389:AAFc8XHNwhOyWVRKD2-nRTPUCFspbuzev0k'
 
-bot = telebot.TeleBot(Token)
+bot = telebot.TeleBot('1092838389:AAFc8XHNwhOyWVRKD2-nRTPUCFspbuzev0k')
 
 disconnect_counter = 0
 status = False
 
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(content_types=["text"])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Здравствуйте, введите ваш пароль:')
+    if message.text == 'войти' or message.text == 'Войти':
+        bot.send_message(message.chat.id, 'Здравствуйте, введите ваш пароль:')
 
 
-@bot.message_handler(content_types=['text'])
-def send_msg(message):
-    if message.text == '0909':
-        bot.send_message(message.chat.id, 'Приветствуем Вас Юлия')
-        keyboard = types.InlineKeyboardMarkup()
+"""модуль сохранения входящих изображений"""
 
-        key_deva = types.InlineKeyboardButton(text='Дева', callback_data='zodiac')
 
-        keyboard.add(key_deva)
+@bot.message_handler(content_types=["photo"])
+def incoming_photo(message):
+    file_info = bot.get_file(message.photo[len(message.photo) - 1].file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
 
-        key_vesy = types.InlineKeyboardButton(text='Весы', callback_data='zodiac')
-
-        keyboard.add(key_vesy)
-
-        key_scorpion = types.InlineKeyboardButton(text='Скорпион', callback_data='zodiac')
-
-        bot.send_message(message.from_user.id, text='Выбери свой знак зодиака', reply_markup=keyboard)
-    elif message.text == '9090':
-        bot.send_message(message.chat.id, 'Приветствуем Вас Камиль')
+    """задается имя картинки согласно комментарию к фото + время отправки 
+    с разршением .jpg в случае наличия комментария,
+    иначе изображению присваивается статус потерявшейся + время отправки"""
+    if message.caption is not None:
+        picture_name = str(message.caption) + '_' + str(datetime.datetime.now()).replace(':', '-') + '.jpg'
     else:
-        bot.send_message(message.chat.id, message.text)
+        picture_name = 'lost image_' + str(datetime.datetime.now()).replace(':', '-') + '.jpg'
+
+    """назначается путь для хранения входящего изображения"""
+    src = r'C:/Users/79876/PycharmProjects/Telebots/documents/photos/' + picture_name
+
+    """путь для развертывания на телефоне"""
+    # src = r'/storage/emulated/0/Android/data/ru.iiec.pydroid3.1/documents/photos/'+ picture_name
 
 
-@bot.callback_query_handler(func=lambda call: True)
+    """открывает файл с назначенным путем в качестве нового файла
+    и записывает в него полученное от пользователя изображение"""
+    with open(src, "wb") as new_file:
+        new_file.write(downloaded_file)
 
-def callback_worker(call):
-    if call.data == "zodiac":
-        msg='вы нажали на кнопку'
-        bot.send_message(call.message.chat.id, msg)
 
 while True:
     try:
         bot.polling(none_stop=True)
     except:
-        local_time = float(1)
-        local_time = local_time * 10
+        local_time = 10
         time.sleep(local_time)
         disconnect_counter += 1
-        print('----------------------[' + str(disconnect_counter/60) + ']----------------------')
+        print('----------------------[' + str(disconnect_counter / 60) + ']----------------------')
         continue
