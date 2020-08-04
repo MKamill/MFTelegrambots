@@ -1,23 +1,19 @@
 import datetime
-import urllib
-
 import telebot
 import time
 
-# f = open(r'/storage/emulated/0/Android/data/ru.iiec.pydroid3.1/bot_config.txt', 'r')
-# Token = f.read()
-Token = '1092838389:AAFc8XHNwhOyWVRKD2-nRTPUCFspbuzev0k'
+f = open(r'data/data/com.termux/files/home/telegram/bot_config.txt', 'r')
+Token = f.read()
+bot = telebot.TeleBot(Token)
 
-bot = telebot.TeleBot('1092838389:AAFc8XHNwhOyWVRKD2-nRTPUCFspbuzev0k')
-
-disconnect_counter = 0
+disconnect_time = 0
 status = False
+
 
 
 @bot.message_handler(content_types=["text"])
 def start_message(message):
-    if message.text == 'войти' or message.text == 'Войти':
-        bot.send_message(message.chat.id, 'Здравствуйте, введите ваш пароль:')
+    bot.send_message(message.chat.id, message.text)
 
 
 """модуль сохранения входящих изображений"""
@@ -28,6 +24,7 @@ def incoming_photo(message):
     file_info = bot.get_file(message.photo[len(message.photo) - 1].file_id)
     downloaded_file = bot.download_file(file_info.file_path)
 
+
     """задается имя картинки согласно комментарию к фото + время отправки 
     с разршением .jpg в случае наличия комментария,
     иначе изображению присваивается статус потерявшейся + время отправки"""
@@ -36,25 +33,22 @@ def incoming_photo(message):
     else:
         picture_name = 'lost image_' + str(datetime.datetime.now()).replace(':', '-') + '.jpg'
 
-    """назначается путь для хранения входящего изображения"""
-    src = r'C:/Users/79876/PycharmProjects/Telebots/documents/photos/' + picture_name
-
-    """путь для развертывания на телефоне"""
-    # src = r'/storage/emulated/0/Android/data/ru.iiec.pydroid3.1/documents/photos/'+ picture_name
-
+    """путь для развертывания на телефоне 4x"""
+    src = r'/data/data/com.termux/files/home/telegram/documents/photos/'+ picture_name
 
     """открывает файл с назначенным путем в качестве нового файла
     и записывает в него полученное от пользователя изображение"""
     with open(src, "wb") as new_file:
         new_file.write(downloaded_file)
+        new_file.close()
 
 
 while True:
     try:
         bot.polling(none_stop=True)
     except:
-        local_time = 10
+        local_time = 5
         time.sleep(local_time)
-        disconnect_counter += 1
-        print('----------------------[' + str(disconnect_counter / 60) + ']----------------------')
+        disconnect_time += local_time
+        print('----------------------[' + str(disconnect_time) + ']----------------------')
         continue
