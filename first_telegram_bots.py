@@ -1,28 +1,12 @@
+import base64
 import datetime
+import pickle
 import types
 
 import telebot
 import subprocess
 import sqlite3 as lite
 import sys
-
-
-def readImage(filename):
-    try:
-        fin = open(filename, "rb")
-        img = fin.read()
-        return img
-    except IOError as e:
-        # В случае ошибки, выводим ее текст
-        print
-        "Error %d: %s" % (e.args[0], e.args[1])
-        sys.exit(1)
-
-    finally:
-        if fin:
-            # Закрываем подключение с файлом
-            fin.close()
-
 
 f = open(r'/data/data/com.termux/files/home/telegram/bot_config.txt', 'r')
 Token = f.read()
@@ -39,13 +23,20 @@ def start_message(message):
 
 @bot.message_handler(content_types=["text"])
 def search_photo(message):
-    name_of_photo = message.text
-    conn = lite.connect(r'/storage/emulated/0/telegram/documents/photos.db')
-    cursor = conn.cursor()
-    sql = "SELECT photo FROM img1 WHERE name=?"
-    cursor.execute(sql, [name_of_photo])
-    output_image = cursor.fetchone()  # or use fetchone()
-    bot.send_photo(message.chat.id, output_image)
+    try:
+        name_of_photo = message.text
+        conn = lite.connect(r'/storage/emulated/0/telegram/documents/photos.db')
+        cursor = conn.cursor()
+        sql = "SELECT path FROM img WHERE name=?"
+        cursor.execute(sql, [name_of_photo])
+        path = cursor.fetchone()  # or use fetchone()
+        bot.send_message(message.chat.id, path)
+    except:
+        bot.send_message(message.chat.id, 'пробую заново')
+        try:
+            search_photo(message)
+        except:
+            bot.send_message(message.chat.id, 'рекурсивная ошибка')
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -98,16 +89,12 @@ def incoming_photo(message):
         with open(src, "wb") as new_file:
             new_file.write(downloaded_file)
             new_file.close()
+
         con = lite.connect(r'/storage/emulated/0/telegram/documents/photos.db')
         cur = con.cursor()
-        # Получаем бинарные данные нашего файла
-        data = readImage(src)
-        # Конвертируем данные
-        binary = lite.Binary(data)
-        # Готовим запрос в базу
-        cur.execute("INSERT INTO img VALUES (?,?)", (message.caption, binary,))
-        # Выполняем запрос
+        cur.execute("INSERT INTO img VALUES (?,?)", (message.caption, src,))
         con.commit()
+
     except:
         bot.send_message(message.chat.id, 'пробую заново')
         try:
