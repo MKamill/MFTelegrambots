@@ -13,7 +13,11 @@ def start_message(message):
     try:
         bot.send_message(message.chat.id, message.text)
     except:
-        bot.send_message(message.chat.id, 'попробуйте заново')
+        bot.send_message(message.chat.id, 'пробую заново')
+        try:
+            start_message(message)
+        except:
+            bot.send_message(message.chat.id, 'рекурсивная ошибка')
 
 
 """модуль сохранения входящих изображений"""
@@ -44,7 +48,16 @@ def incoming_photo(message):
             new_file.write(downloaded_file)
             new_file.close()
     except:
-        bot.send_message(message.chat.id, 'попробуйте заново')
+        bot.send_message(message.chat.id, 'пробую заново')
+        try:
+            incoming_photo(message)
+            bot.send_message(message.chat.id, 'фото добавлено')
+        except:
+            bot.send_message(message.chat.id, 'рекурсивная ошибка')
+
+
+
+
 
 
 
