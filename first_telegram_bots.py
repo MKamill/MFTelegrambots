@@ -1,8 +1,13 @@
 import datetime
+import types
+
 import telebot
 import subprocess
 import sqlite3 as lite
 import sys
+
+
+
 
 def readImage(filename):
     try:
@@ -20,10 +25,28 @@ def readImage(filename):
             # Закрываем подключение с файлом
             fin.close()
 
+
 f = open(r'/data/data/com.termux/files/home/telegram/bot_config.txt', 'r')
 Token = f.read()
 bot = telebot.TeleBot(Token)
 
+@bot.message_handler(commands=['test'])
+def start_message(message):
+    markup = telebot.types.InlineKeyboardMarkup()
+    markup.add(telebot.types.InlineKeyboardButton(text='Добавить', callback_data='add'))
+    markup.add(telebot.types.InlineKeyboardButton(text='Найти', callback_data='search'))
+    bot.send_message(message.chat.id, text="Выберите действие", reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda call: True)
+def query_handler(call):
+
+    bot.answer_callback_query(callback_query_id=call.id)
+    answer = ''
+    if call.data == 'add':
+        answer = 'Отправьте фото с подписью'
+    elif call.data == 'search':
+        answer = 'Введите название искомого материала'
+    bot.send_message(call.message.chat.id, answer)
 
 @bot.message_handler(content_types=["text"])
 def start_message(message):
@@ -71,7 +94,7 @@ def incoming_photo(message):
         # Конвертируем данные
         binary = lite.Binary(data)
         # Готовим запрос в базу
-        cur.execute("INSERT INTO img VALUES (?,?)", (picture_name,binary,))
+        cur.execute("INSERT INTO img VALUES (?,?)", (message.caption, binary,))
         # Выполняем запрос
         con.commit()
     except:
@@ -81,12 +104,6 @@ def incoming_photo(message):
             bot.send_message(message.chat.id, 'фото добавлено')
         except:
             bot.send_message(message.chat.id, 'рекурсивная ошибка')
-
-
-
-
-
-
 
 
 while True:
