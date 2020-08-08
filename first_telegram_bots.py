@@ -71,7 +71,7 @@ def incoming_photo(message):
         # Конвертируем данные
         binary = lite.Binary(data)
         # Готовим запрос в базу
-        cur.execute("INSERT INTO img VALUES (?)", (binary,))
+        cur.execute("INSERT INTO img VALUES (?,?)", (picture_name,binary,))
         # Выполняем запрос
         con.commit()
     except:
