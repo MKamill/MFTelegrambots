@@ -1,12 +1,8 @@
-import base64
 import datetime
-import pickle
-import types
-
 import telebot
+from PIL import Image, ImageDraw
 import subprocess
 import sqlite3 as lite
-import sys
 
 f = open(r'/data/data/com.termux/files/home/telegram/bot_config.txt', 'r')
 Token = f.read()
@@ -30,7 +26,8 @@ def search_photo(message):
         sql = "SELECT path FROM img WHERE name=?"
         cursor.execute(sql, [name_of_photo])
         path = cursor.fetchone()  # or use fetchone()
-        bot.send_message(message.chat.id, path)
+        out_img = Image.open(path)
+        bot.send_photo(message.chat.id, out_img)
     except:
         bot.send_message(message.chat.id, 'пробую заново')
         try:
