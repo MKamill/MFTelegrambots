@@ -1,7 +1,24 @@
 import datetime
 import telebot
-import time
 import subprocess
+import sqlite3 as lite
+import sys
+
+def readImage(filename):
+    try:
+        fin = open(filename, "rb")
+        img = fin.read()
+        return img
+    except IOError as e:
+        # В случае ошибки, выводим ее текст
+        print
+        "Error %d: %s" % (e.args[0], e.args[1])
+        sys.exit(1)
+
+    finally:
+        if fin:
+            # Закрываем подключение с файлом
+            fin.close()
 
 f = open(r'/data/data/com.termux/files/home/telegram/bot_config.txt', 'r')
 Token = f.read()
@@ -40,13 +57,23 @@ def incoming_photo(message):
             picture_name = 'lost image_' + str(datetime.datetime.now()).replace(':', '-') + '.jpg'
 
         """путь для развертывания на телефоне 4x"""
-        src = r'/storage/emulated/0/telegram/documents/photos' + picture_name
+        src = r'/storage/emulated/0/telegram/documents/photos/' + picture_name
 
         """открывает файл с назначенным путем в качестве нового файла
         и записывает в него полученное от пользователя изображение"""
         with open(src, "wb") as new_file:
             new_file.write(downloaded_file)
             new_file.close()
+        con = lite.connect(r'/storage/emulated/0/telegram/documents/photos.db')
+        cur = con.cursor()
+        # Получаем бинарные данные нашего файла
+        data = readImage(src)
+        # Конвертируем данные
+        binary = lite.Binary(data)
+        # Готовим запрос в базу
+        cur.execute("INSERT INTO img VALUES (?)", (binary,))
+        # Выполняем запрос
+        con.commit()
     except:
         bot.send_message(message.chat.id, 'пробую заново')
         try:
