@@ -7,8 +7,6 @@ import sqlite3 as lite
 import sys
 
 
-
-
 def readImage(filename):
     try:
         fin = open(filename, "rb")
@@ -30,23 +28,36 @@ f = open(r'/data/data/com.termux/files/home/telegram/bot_config.txt', 'r')
 Token = f.read()
 bot = telebot.TeleBot(Token)
 
+
 @bot.message_handler(commands=['test'])
 def start_message(message):
     markup = telebot.types.InlineKeyboardMarkup()
     markup.add(telebot.types.InlineKeyboardButton(text='Добавить', callback_data='add'))
     markup.add(telebot.types.InlineKeyboardButton(text='Найти', callback_data='search'))
-    bot.send_message(message.chat.id, text="Выберите действие", reply_markup=markup)
+    bot.send_message(message.chat.id, text="Выберите действие 👇", reply_markup=markup)
+
+
+@bot.message_handler(content_types=["text"])
+def search_photo(message):
+    name_of_photo = message.text
+    conn = lite.connect(r'/storage/emulated/0/telegram/documents/photos.db')
+    cursor = conn.cursor()
+    sql = "SELECT photo FROM img1 WHERE name=?"
+    cursor.execute(sql, [name_of_photo])
+    output_image = cursor.fetchone()  # or use fetchone()
+    bot.send_photo(message.chat.id, output_image)
+
 
 @bot.callback_query_handler(func=lambda call: True)
 def query_handler(call):
-
     bot.answer_callback_query(callback_query_id=call.id)
     answer = ''
     if call.data == 'add':
-        answer = 'Отправьте фото с подписью'
+        answer = 'Отправьте фото с подписью 📝'
     elif call.data == 'search':
-        answer = 'Введите название искомого материала'
+        answer = 'Введите название искомого материала 🔎'
     bot.send_message(call.message.chat.id, answer)
+
 
 @bot.message_handler(content_types=["text"])
 def start_message(message):
