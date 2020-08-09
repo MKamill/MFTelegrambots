@@ -39,11 +39,11 @@ def main_inc_photo(ch_id):
             cur = con.cursor()
             cur.execute("INSERT INTO img VALUES (?,?)", (message.caption, dumb_src,))
             con.commit()
-
+            return
         except:
-            connection.bot.send_message(message.chat.id, 'пробую заново')
             try:
                 incoming_photo(message)
-                connection.bot.send_message(message.chat.id, 'фото добавлено')
+                return
             except:
                 connection.bot.send_message(message.chat.id, 'рекурсивная ошибка')
+                return
