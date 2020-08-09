@@ -15,7 +15,7 @@ def start_message(message):
 
 
 def main_search(ch_id):
-    connection.bot.send_message(ch_id, 'что вам найти')
+    connection.bot.send_message(ch_id, 'Введите название искомого материала 🔎')
 
     @connection.bot.message_handler(content_types=['text'])
     def search_photo(message):
