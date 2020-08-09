@@ -12,7 +12,6 @@ def search_photo(message):
         cursor.execute(sql, [name_of_photo])
         path = cursor.fetchone()  # or use fetchone()
         connection.bot.send_message(message.chat.id, path)
-
         doc = open(fr'{path}'.replace('(', '').replace(')', '').replace('\'', '').replace(',', ''), 'rb')
         connection.bot.send_photo(message.chat.id, doc)
     except:
