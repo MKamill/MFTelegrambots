@@ -3,10 +3,8 @@ import work_with_keyboard_and_buttons as keyboard
 import work_with_connection as connection
 import work_with_text_type as text
 
-connection.bot
 
 text.start_message()
-
 keyboard.start_message()
 keyboard.query_handler()
 
