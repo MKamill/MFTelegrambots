@@ -1,6 +1,6 @@
 import telebot
 import work_with_connection as connection
-
+import work_with_text_type as text
 
 @connection.bot.message_handler(commands=['test'])
 def start_message(message):
@@ -16,6 +16,11 @@ def query_handler(call):
     answer = ''
     if call.data == 'add':
         answer = 'Отправьте фото с подписью 📝'
+        connection.bot.send_message(call.message.chat.id, answer)
+
     elif call.data == 'search':
         answer = 'Введите название искомого материала 🔎'
-    connection.bot.send_message(call.message.chat.id, answer)
+        connection.bot.send_message(call.message.chat.id, answer)
+        text.main_search(call.message.chat.id)
+
+
