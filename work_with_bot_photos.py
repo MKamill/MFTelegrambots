@@ -37,7 +37,8 @@ def main_inc_photo(ch_id):
 
             con = lite.connect(r'/storage/emulated/0/telegram/documents/photos.db')
             cur = con.cursor()
-            cur.execute("INSERT INTO img VALUES (?,?)", (message.caption, dumb_src,))
+            ind = 1
+            cur.execute("INSERT INTO img VALUES (?,?,?)", (message.caption, dumb_src, ind))
             con.commit()
             return
         except:

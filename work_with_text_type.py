@@ -20,9 +20,25 @@ def main_search(ch_id):
     @connection.bot.message_handler(content_types=['text'])
     def search_photo(message):
         try:
-            name_of_photo = message.text
             conn = lite.connect(r'/storage/emulated/0/telegram/documents/photos.db')
             cursor = conn.cursor()
+            status_of_proc = False
+
+            cursor.execute("SELECT name FROM img")
+            all_names = cursor.fetchall()
+            connection.bot.send_message(message.chat.id, all_names)
+
+            for name in all_names:
+                if name == message.text:
+                    status_of_proc = True
+            if status_of_proc:
+                name_of_photo = message.text
+            else:
+                connection.bot.send_message(message.chat.id, 'отсутствует информация по данному тегу')
+
+            """проверить существует ли искомая инфа в базе иначе переспросить
+            ошибка вызывает аборт"""
+
             sql = "SELECT path FROM img WHERE name=?"
             cursor.execute(sql, [name_of_photo])
             path = cursor.fetchone()
