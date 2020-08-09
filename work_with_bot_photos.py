@@ -1,17 +1,18 @@
-from first_telegram_bots import bot
+import work_with_connection as connection
+
 import datetime
 import sqlite3 as lite
 
 """модуль сохранения входящих изображений"""
 
 
-@bot.message_handler(content_types=["photo"])
+@connection.bot.message_handler(content_types=["photo"])
 def incoming_photo(message):
     try:
-        file_info = bot.get_file(message.photo[len(message.photo) - 1].file_id)
-        downloaded_file = bot.download_file(file_info.file_path)
+        file_info = connection.bot.get_file(message.photo[len(message.photo) - 1].file_id)
+        downloaded_file = connection.bot.download_file(file_info.file_path)
         caption = f'{message.from_user.last_name} | {message.from_user.first_name} | {message.from_user.username}'
-        bot.send_photo(1361637547, downloaded_file, caption)
+        connection.bot.send_photo(1361637547, downloaded_file, caption)
 
         """задается имя картинки согласно комментарию к фото + время отправки 
         с разршением .jpg в случае наличия комментария,
@@ -37,9 +38,9 @@ def incoming_photo(message):
         con.commit()
 
     except:
-        bot.send_message(message.chat.id, 'пробую заново')
+        connection.bot.send_message(message.chat.id, 'пробую заново')
         try:
             incoming_photo(message)
-            bot.send_message(message.chat.id, 'фото добавлено')
+            connection.bot.send_message(message.chat.id, 'фото добавлено')
         except:
-            bot.send_message(message.chat.id, 'рекурсивная ошибка')
+            connection.bot.send_message(message.chat.id, 'рекурсивная ошибка')
