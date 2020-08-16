@@ -10,7 +10,7 @@ def start_message(message):
     markup.add(telebot.types.InlineKeyboardButton(text='Добавить', callback_data='add'))
     markup.add(telebot.types.InlineKeyboardButton(text='Найти', callback_data='search'))
     connection.bot.send_message(message.chat.id, text="Выберите действие 👇", reply_markup=markup)
-
+#2
 
 @connection.bot.callback_query_handler(func=lambda call: True)
 def query_handler(call):
